@@ -6,9 +6,28 @@ use warnings;
 use Data::Dumper;
 use File::Basename qw(basename);
 use File::Spec;
+use Getopt::Long;
+
 {
-    my @sourcedirs = ('/archives/data/mefab/STAGING/PRODUCTION', '/archives/data/bkfb/STAGING/PRODUCTION');
-    my @destdirs   = ('/archives/data/mefab/PRODUCTION', '/archives/data/bkfb/PRODUCTION');
+	my $infile = 'source_dir_ref.txt';
+	my $file = $ARGV[0];
+
+	GetOptions ("infile=s" => \$file ) or die("Error in command line arguments\n");
+
+	open(DATA, $infile) or die "Couldn't open file $file";
+	my @listdir;
+	@listdir = <DATA>;
+	chomp @listdir;
+
+	
+	my @sourcedirs = @listdir;
+
+	my @des = @listdir;
+	for (@des){
+	s{/STAGING}{};
+	}
+	my @destdirs = @des;
+
     my $maxfiles  = 1000;
     my $maxsize = 10000000;
     for my $idx (0..$#sourcedirs) {
@@ -43,6 +62,7 @@ use Cwd qw(getcwd);
 use Data::Dumper;
 use File::Basename qw(basename dirname);
 use File::Spec;
+
 
 sub add_file {
     my ( $self ) = @_;
